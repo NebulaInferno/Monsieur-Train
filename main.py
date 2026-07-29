@@ -29,9 +29,12 @@ from pathlib import Path
 import pandas as pd
 import builtins
 from dotenv import dotenv_values
+from keep_alive import keep_alive
 
 # thing to make it work on all oses
 import sys
+
+keep_alive()
 
 async def send_message(message, user_message, is_private):
     try:
