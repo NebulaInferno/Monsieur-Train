@@ -83,7 +83,7 @@ for file in required_files:
 
 config = dotenv_values(".env")
 
-TOKEN = 'MTQ1MTA1MTM3MzkzNTMyOTM5Mg.GMLhE1.V0MGvL2ibxnzmUyagGeg3Yilj927eqLYigLz1c'
+TOKEN = config['BOT_TOKEN']
 
 def run_discord_bot():
 
