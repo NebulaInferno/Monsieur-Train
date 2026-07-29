@@ -1,5 +1,6 @@
 discord.py
 requests
+responses
 beautifulsoup4
 selenium
 discord.py
