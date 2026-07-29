@@ -1,3 +1,4 @@
 .env
 logs.csv
 blank.txt
+.venv
