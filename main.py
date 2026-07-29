@@ -3,7 +3,6 @@ import responses
 from math import e
 from numbers import Number
 import operator
-from shutil import ExecError
 import shutil
 import sqlite3
 from tracemalloc import stop
