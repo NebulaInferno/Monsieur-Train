@@ -65,7 +65,9 @@ def get_next_user_train_log(user: int):
     except (FileNotFoundError, IndexError):
         return 1
 
-required_files = ['logs.csv']
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+required_files = [os.path.join(BASE_DIR, 'logs.csv')]
 for file in required_files:
     file_name = os.path.dirname(file)
     if file_name:
