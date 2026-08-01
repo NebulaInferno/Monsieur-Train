@@ -451,27 +451,33 @@ def run_discord_bot():
                 await message.channel.send(f"Deleted Logs")
         elif 'remove' in user_message.lower():
             if message.author.id == 1065872885559861289:
-                train = user_message.replace("remove ", "")
-                with open("siemenslist.csv", "r") as file:
+                sandwich = user_message[7:].strip()
+                with open("siemenlist.csv", "r") as file:
                     reader = csv.reader(file)
                     siemens = []
                     for row in reader:
-                        if train not in row[0]:
+                        if row and sandwich.lower() not in row[0].lower():
                             siemens.append(row)
-                with open("siemenslist.csv", "w") as file:
+                with open("siemenlist.csv", "w", newline='') as file:
                     writer = csv.writer(file)
                     writer.writerows(siemens)
+                    await message.channel.send(f"Removed {sandwich}")
         elif 'add' in user_message.lower():
             if message.author.id == 1065872885559861289:
-                train = user_message.replace("add ", "")
-                with open("siemenslist.csv", "r") as file:
-                    reader = csv.reader(file)
-                    for row in reader:
-                        if train in row[0]:
-                            return
-                with open("siemenslist.csv", "w", newline='') as file:
+                sandwich = user_message[4:].strip()
+                try:
+                    with open("siemenlist.csv", "r") as file:
+                        reader = csv.reader(file)
+                        for row in reader:
+                            if sandwich in row[0]:
+                                return
+                except Exception as e:
+                    await message.channel.send(f"Error: {e}")
+                    pass
+                with open("siemenlist.csv", "a", newline='') as file:
                     writer = csv.writer(file)
-                    writer.writerow(train)
+                    writer.writerow([sandwich])
+                    await message.channel.send(f"Added {sandwich}")
         elif user_message.lower() == "<@1451051373935329392> kill":
             if message.author.id == 1065872885559861289:
                 await message.channel.send(f"Killing Bot...")

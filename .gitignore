@@ -2,3 +2,4 @@
 logs.csv
 blank.txt
 .venv
+__pycache__
