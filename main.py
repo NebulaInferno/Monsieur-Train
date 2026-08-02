@@ -69,7 +69,7 @@ def get_next_user_train_log(user: int):
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-required_files = [os.path.join(BASE_DIR, 'logs.csv')]
+required_files = [os.path.join(BASE_DIR, 'logs.csv'), os.path.join(BASE_DIR, 'siemenlist.csv')]
 for file in required_files:
     file_name = os.path.dirname(file)
     if file_name:
@@ -424,10 +424,10 @@ def run_discord_bot():
         # Handle the !ping command
         elif user_message.lower() == "!ping":
             latency = round(client.latency * 1000)
-            await message.channel.send(f"pong! {latency}ms")
+            await message.channel.send(f"pong! Latency:{latency}ms")
         # All other messages go through the standard handler
-        elif 'log' in user_message and 'logs' not in user_message:
-            log = user_message.replace("log ", "")
+        elif 'log' in user_message[:3].lower():
+            log = user_message[4:].strip()
             with open("trainsblahblajblah.csv", "r") as file:
                 reader = csv.reader(file)
                 for row in reader:
@@ -449,7 +449,7 @@ def run_discord_bot():
             with open("logs.csv", "r+") as file:
                 file.truncate(file.tell())
                 await message.channel.send(f"Deleted Logs")
-        elif 'remove' in user_message.lower():
+        elif 'remove' in user_message[:6].lower():
             if message.author.id == 1065872885559861289:
                 sandwich = user_message[7:].strip()
                 with open("siemenlist.csv", "r") as file:
@@ -462,7 +462,7 @@ def run_discord_bot():
                     writer = csv.writer(file)
                     writer.writerows(siemens)
                     await message.channel.send(f"Removed {sandwich}")
-        elif 'add' in user_message.lower():
+        elif 'add' in user_message[:4].lower():
             if message.author.id == 1065872885559861289:
                 sandwich = user_message[4:].strip()
                 try:
