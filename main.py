@@ -45,6 +45,12 @@ async def send_message(message, user_message, is_private):
     except Exception as e:
         print(e)
 
+def in_first_half(station):
+    return all(char.lower() <= 'm' for char in station if char.isalpha())
+
+def in_last_half(station):
+    return all(char.lower() >= 'n' for char in station if char.isalpha())
+
 def get_next_train_log(user_name: int):
     try:
         with open("trainlogs.csv", mode="r") as file:
@@ -96,12 +102,14 @@ def run_discord_bot():
     log = app_commands.Group(name='log', description='train stuff')
     bus = app_commands.Group(name='bus', description='bus stuff')
     siemens = app_commands.Group(name='siemens', description='Siemens stuff')
+    get = app_commands.Group(name='get', description='Gets stuff')
     tree = app_commands.CommandTree(client)
     @client.event
     async def on_ready():
         tree.add_command(log)
         tree.add_command(bus)
         tree.add_command(siemens)
+        tree.add_command(get)
         print(f'{client.user}')
         await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.CustomActivity(name="Reading peoples logs"))
         await tree.sync()
@@ -409,6 +417,40 @@ def run_discord_bot():
         runs = "Runs for unlogged Siemens\n" + "\n".join(links)
         await interaction.response.send_message(runs)
 
+    @get.command(name="first_half", description="gets stations starting with the first half of the alphabet")
+    async def first(interaction: discord.Interaction):
+        try:
+            stations = []
+            with open("stations.csv", "r") as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    station = row[0]
+                    if in_first_half(station):
+                        stations.append(f'{station}')
+                stationz = "\n".join(stations)
+                embed=discord.Embed(title=f'Stations in the first half of the alphabet', color=0x831a9c)
+                embed.add_field(name='Stations:', value=stationz)
+                await interaction.response.send_message(embed=embed)
+        except Exception as e:
+            print(f"Error: {e}")
+
+    @get.command(name="last_half", description="gets stations starting with the last half of the alphabet")
+    async def last(interaction: discord.Interaction):
+        try:
+            stations = []
+            with open("stations.csv", "r") as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    station = row[0]
+                    if in_last_half(station):
+                        stations.append(f'{station}')
+                stationz = "\n".join(stations)
+                embed=discord.Embed(title=f'Stations in the last half of the alphabet', color=0x831a9c)
+                embed.add_field(name='Stations:', value=stationz)
+                await interaction.response.send_message(embed=embed)
+        except Exception as e:
+            print(f"Error: {e}")
+
     @client.event
     async def on_message(message):
         if message.author == client.user:
@@ -478,6 +520,32 @@ def run_discord_bot():
                     writer = csv.writer(file)
                     writer.writerow([sandwich])
                     await message.channel.send(f"Added {sandwich}")
+        elif user_message.lower() == "get stations first":
+            if message.author.id == 1065872885559861289:
+                try:
+                    with open("stations.csv", "r") as file:
+                        reader = csv.reader(file)
+                        for row in reader:
+                            station = row[0]
+                            if in_first_half(station):
+                                await message.channel.send(f'{station}')
+                        await message.channel.send(f'List Complete')
+                except Exception as e:
+                    print(f"Error: {e}")
+
+        elif user_message.lower() == "get stations last":
+                    if message.author.id == 1065872885559861289:
+                        try:
+                            with open("stations.csv", "r") as file:
+                                reader = csv.reader(file)
+                                for row in reader:
+                                    station = row[0]
+                                    if in_last_half(station):
+                                        await message.channel.send(f'{station}')
+                                await message.channel.send(f'List Complete')
+                        except Exception as e:
+                            print(f"Error: {e}")
+
         elif user_message.lower() == "<@1451051373935329392> kill":
             if message.author.id == 1065872885559861289:
                 await message.channel.send(f"Killing Bot...")
